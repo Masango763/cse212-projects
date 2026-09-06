@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-namespace week01;
-
 public static class Arrays
 {
     /// <summary>
