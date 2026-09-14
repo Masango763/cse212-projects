@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 public static class SetsAndMaps
 {
@@ -95,16 +95,20 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 5: Fetch today's earthquake summaries from USGS GeoJSON.
+    /// Problem 5: Fetch today's earthquake summaries from USGS GeoJSON synchronously.
     /// </summary>
-    public static async Task<string[]> EarthquakeDailySummary()
+    public static string[] EarthquakeDailySummary()
     {
         string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         using var client = new HttpClient();
         
         try
         {
-            var featureCollection = await client.GetFromJsonAsync<FeatureDataContainer>(uri);
+            var response = client.GetAsync(uri).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode)
+                return Array.Empty<string>();
+
+            var featureCollection = response.Content.ReadFromJsonAsync<FeatureDataContainer>().GetAwaiter().GetResult();
 
             if (featureCollection?.Features == null)
                 return Array.Empty<string>();
