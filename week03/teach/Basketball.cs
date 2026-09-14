@@ -1,36 +1,59 @@
-﻿/*
- * CSE 212 Lesson 6C 
- * 
- * This code will analyze the NBA basketball data and create a table showing
- * the players with the top 10 career points.
- * 
- * Note about columns:
- * - Player ID is in column 0
- * - Points is in column 8
- * 
- * Each row represents the player's stats for a single season with a single team.
- */
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
-using Microsoft.VisualBasic.FileIO;
+namespace week03.teach;
 
-public class Basketball
+public static class Basketball
 {
     public static void Run()
     {
-        var players = new Dictionary<string, int>();
+        var playerPoints = new Dictionary<string, int>();
 
-        using var reader = new TextFieldParser("basketball.csv");
-        reader.TextFieldType = FieldType.Delimited;
-        reader.SetDelimiters(",");
-        reader.ReadFields(); // ignore header row
-        while (!reader.EndOfData) {
-            var fields = reader.ReadFields()!;
-            var playerId = fields[0];
-            var points = int.Parse(fields[8]);
+        string filePath = "week03/teach/basketball.csv";
+        if (!File.Exists(filePath))
+        {
+            filePath = "basketball.csv";
         }
 
-        Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
+        if (File.Exists(filePath))
+        {
+            using var reader = new StreamReader(filePath);
+            bool header = true;
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (header)
+                {
+                    header = false;
+                    continue;
+                }
 
-        var topPlayers = new string[10];
+                var values = line.Split(',');
+                if (values.Length > 8)
+                {
+                    string playerId = values[0];
+                    if (int.TryParse(values[8], out int points))
+                    {
+                        if (!playerPoints.ContainsKey(playerId))
+                        {
+                            playerPoints[playerId] = 0;
+                        }
+                        playerPoints[playerId] += points;
+                    }
+                }
+            }
+        }
+
+        var topPlayers = playerPoints
+            .OrderByDescending(p => p.Value)
+            .Take(10);
+
+        Console.WriteLine("Top 10 NBA Players by Total Points:");
+        foreach (var player in topPlayers)
+        {
+            Console.WriteLine($"Player: {player.Key}, Total Points: {player.Value}");
+        }
     }
 }
