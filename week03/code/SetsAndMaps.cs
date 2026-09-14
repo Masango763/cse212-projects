@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public static class SetsAndMaps
@@ -124,26 +123,4 @@ public static class SetsAndMaps
             return Array.Empty<string>();
         }
     }
-}
-
-// Supporting classes for JSON Deserialization
-public class FeatureCollection
-{
-    [JsonPropertyName("features")]
-    public Feature[] Features { get; set; }
-}
-
-public class Feature
-{
-    [JsonPropertyName("properties")]
-    public EarthquakeProperties Properties { get; set; }
-}
-
-public class EarthquakeProperties
-{
-    [JsonPropertyName("mag")]
-    public double Mag { get; set; }
-
-    [JsonPropertyName("place")]
-    public string Place { get; set; }
 }
