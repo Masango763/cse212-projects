@@ -5,8 +5,6 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace week03.code;
-
 public static class SetsAndMaps
 {
     /// <summary>

@@ -1,4 +1,4 @@
-namespace week03.code;
+using System.Collections.Generic;
 
 /// <summary>
 /// Defines a maze using a dictionary.
@@ -14,10 +14,6 @@ public class Maze
         _maze = maze;
     }
 
-    /// <summary>
-    /// Check to see if you can move left. If you can, then move. If you
-    /// can't, print "Can't go that way!".
-    /// </summary>
     public void MoveLeft()
     {
         var currPos = (_x, _y);
@@ -31,10 +27,6 @@ public class Maze
         }
     }
 
-    /// <summary>
-    /// Check to see if you can move right. If you can, then move. If you
-    /// can't, print "Can't go that way!".
-    /// </summary>
     public void MoveRight()
     {
         var currPos = (_x, _y);
@@ -48,10 +40,6 @@ public class Maze
         }
     }
 
-    /// <summary>
-    /// Check to see if you can move up. If you can, then move. If you
-    /// can't, print "Can't go that way!".
-    /// </summary>
     public void MoveUp()
     {
         var currPos = (_x, _y);
@@ -65,10 +53,6 @@ public class Maze
         }
     }
 
-    /// <summary>
-    /// Check to see if you can move down. If you can, then move. If you
-    /// can't, print "Can't go that way!".
-    /// </summary>
     public void MoveDown()
     {
         var currPos = (_x, _y);
