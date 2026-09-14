@@ -32,4 +32,3 @@ public class PersonQueue
     {
         return $"[{string.Join(", ", _queue)}]";
     }
-}
