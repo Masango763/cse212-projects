@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public static class SetsAndMaps
@@ -103,7 +104,7 @@ public static class SetsAndMaps
         
         try
         {
-            var featureCollection = await client.GetFromJsonAsync<FeatureCollection>(uri);
+            var featureCollection = await client.GetFromJsonAsync<FeatureDataContainer>(uri);
 
             if (featureCollection?.Features == null)
                 return Array.Empty<string>();
@@ -123,4 +124,26 @@ public static class SetsAndMaps
             return Array.Empty<string>();
         }
     }
+}
+
+// JSON Deserialization classes
+public class FeatureDataContainer
+{
+    [JsonPropertyName("features")]
+    public EarthquakeFeature[] Features { get; set; }
+}
+
+public class EarthquakeFeature
+{
+    [JsonPropertyName("properties")]
+    public EarthquakeProperties Properties { get; set; }
+}
+
+public class EarthquakeProperties
+{
+    [JsonPropertyName("mag")]
+    public double Mag { get; set; }
+
+    [JsonPropertyName("place")]
+    public string Place { get; set; }
 }
