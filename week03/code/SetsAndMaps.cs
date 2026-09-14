@@ -14,6 +14,7 @@ public static class SetsAndMaps
     {
         var seen = new HashSet<string>();
         var result = new List<string>();
+        var addedPairs = new HashSet<string>();
 
         foreach (var w in words)
         {
@@ -27,7 +28,7 @@ public static class SetsAndMaps
             if (seen.Contains(rev))
             {
                 string pair = string.Compare(w, rev) < 0 ? $"{w} & {rev}" : $"{rev} & {w}";
-                if (!result.Contains(pair))
+                if (addedPairs.Add(pair))
                 {
                     result.Add(pair);
                 }
@@ -49,15 +50,27 @@ public static class SetsAndMaps
         {
             foreach (var line in File.ReadLines(filename))
             {
+                if (string.IsNullOrWhiteSpace(line)) continue;
                 var fields = line.Split(',');
-                if (fields.Length > 4)
+                if (fields.Length > 3)
                 {
-                    string degree = fields[4].Trim();
-                    if (!degrees.ContainsKey(degree))
+                    // Typically degree is at index 3 or 4 depending on CSV format; let's trim quotes and whitespace
+                    string degree = fields[3].Trim().Trim('"');
+                    // Skip header if present
+                    if (degree.Equals("Bachelors", StringComparison.OrdinalIgnoreCase) && fields.Length > 4)
                     {
-                        degrees[degree] = 0;
+                        // Some formats have it at index 4
+                        degree = fields[4].Trim().Trim('"');
                     }
-                    degrees[degree]++;
+                    
+                    if (!string.IsNullOrEmpty(degree) && !degree.Equals("Degree", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!degrees.ContainsKey(degree))
+                        {
+                            degrees[degree] = 0;
+                        }
+                        degrees[degree]++;
+                    }
                 }
             }
         }

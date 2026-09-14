@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -23,7 +24,7 @@ public class Maze
         }
         else
         {
-            System.Console.WriteLine("Can't go that way!");
+            throw new InvalidOperationException("Can't go that way!");
         }
     }
 
@@ -36,7 +37,7 @@ public class Maze
         }
         else
         {
-            System.Console.WriteLine("Can't go that way!");
+            throw new InvalidOperationException("Can't go that way!");
         }
     }
 
@@ -49,7 +50,7 @@ public class Maze
         }
         else
         {
-            System.Console.WriteLine("Can't go that way!");
+            throw new InvalidOperationException("Can't go that way!");
         }
     }
 
@@ -62,7 +63,7 @@ public class Maze
         }
         else
         {
-            System.Console.WriteLine("Can't go that way!");
+            throw new InvalidOperationException("Can't go that way!");
         }
     }
 
