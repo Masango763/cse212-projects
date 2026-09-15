@@ -40,7 +40,7 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 2: Read census.txt and summarize degrees found in the education column.
+    /// Problem 2: Read census.txt and summarize degrees found in column 4.
     /// </summary>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
@@ -52,11 +52,13 @@ public static class SetsAndMaps
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 var fields = line.Split(',');
-                // Education is typically at index 1 in the standard census.txt dataset
-                if (fields.Length > 1)
+                
+                // Column 4 is standard for the education/degree field in CSE 212 census.txt
+                if (fields.Length > 4)
                 {
-                    string degree = fields[1].Trim().Trim('"');
-                    if (!string.IsNullOrEmpty(degree))
+                    string degree = fields[4].Trim().Trim('"');
+                    
+                    if (!string.IsNullOrEmpty(degree) && !degree.Equals("education", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!degrees.ContainsKey(degree))
                         {
