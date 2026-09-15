@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 public static class SetsAndMaps
 {
     /// <summary>
-    /// Problem 1: Find symmetric pairs of two letter words in strict O(n) time using a set.
+    /// Problem 1: Find symmetric pairs of two letter words in O(n) time using a set.
     /// </summary>
     public static string[] FindPairs(string[] words)
     {
@@ -18,23 +18,29 @@ public static class SetsAndMaps
 
         foreach (var w in words)
         {
-            if (w == null || w.Length != 2) continue;
-            char c1 = w[0];
-            char c2 = w[1];
-            if (c1 == c2) continue;
+            if (string.IsNullOrEmpty(w) || w.Length != 2)
+                continue;
 
-            // Construct reverse string quickly
-            string rev = new string(new char[] { c2, c1 });
+            char first = w[0];
+            char second = w[1];
 
-            if (seen.Contains(rev))
+            if (first == second)
+                continue;
+
+            string reverse = new string(new[] { second, first });
+
+            if (seen.Contains(reverse))
             {
-                // Order them consistently to prevent duplicate pairs
-                string pair = c1 < c2 ? $"{c1}{c2} & {c2}{c1}" : $"{c2}{c1} & {c1}{c2}";
+                string pair = string.CompareOrdinal(w, reverse) < 0
+                    ? $"{w} & {reverse}"
+                    : $"{reverse} & {w}";
+
                 if (addedPairs.Add(pair))
                 {
                     result.Add(pair);
                 }
             }
+
             seen.Add(w);
         }
 
@@ -42,32 +48,40 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 2: Read census.txt and summarize degrees found in column 4.
+    /// Problem 2: Read census.txt and summarize degrees.
     /// </summary>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
 
-        if (File.Exists(filename))
+        if (!File.Exists(filename))
+            return degrees;
+
+        foreach (var line in File.ReadLines(filename))
         {
-            foreach (var line in File.ReadLines(filename))
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var fields = line.Split(',');
+
+            if (fields.Length <= 4)
+                continue;
+
+            string degree = fields[3].Trim().Trim('"');
+
+            if (degree.Equals("education", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (string.IsNullOrWhiteSpace(degree))
+                continue;
+
+            if (degrees.ContainsKey(degree))
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                var fields = line.Split(',');
-                
-                if (fields.Length > 4)
-                {
-                    string degree = fields[4].Trim().Trim('"');
-                    
-                    if (!string.IsNullOrEmpty(degree) && !degree.Equals("education", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!degrees.ContainsKey(degree))
-                        {
-                            degrees[degree] = 0;
-                        }
-                        degrees[degree]++;
-                    }
-                }
+                degrees[degree]++;
+            }
+            else
+            {
+                degrees[degree] = 1;
             }
         }
 
@@ -79,25 +93,34 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        if (word1 == null || word2 == null) return false;
+        if (word1 == null || word2 == null)
+            return false;
 
-        var clean1 = word1.Replace(" ", "").ToLower();
-        var clean2 = word2.Replace(" ", "").ToLower();
+        string clean1 = word1.Replace(" ", "").ToLower();
+        string clean2 = word2.Replace(" ", "").ToLower();
 
-        if (clean1.Length != clean2.Length) return false;
+        if (clean1.Length != clean2.Length)
+            return false;
 
         var counts = new Dictionary<char, int>();
-        foreach (var c in clean1)
+
+        foreach (char c in clean1)
         {
-            if (!counts.ContainsKey(c)) counts[c] = 0;
+            if (!counts.ContainsKey(c))
+                counts[c] = 0;
+
             counts[c]++;
         }
 
-        foreach (var c in clean2)
+        foreach (char c in clean2)
         {
-            if (!counts.ContainsKey(c)) return false;
+            if (!counts.ContainsKey(c))
+                return false;
+
             counts[c]--;
-            if (counts[c] < 0) return false;
+
+            if (counts[c] < 0)
+                return false;
         }
 
         return true;
@@ -108,26 +131,40 @@ public static class SetsAndMaps
     /// </summary>
     public static string[] EarthquakeDailySummary()
     {
-        string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+        string uri =
+            "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+
         using var client = new HttpClient();
-        
+
         try
         {
-            var response = client.GetAsync(uri).GetAwaiter().GetResult();
+            var response = client
+                .GetAsync(uri)
+                .GetAwaiter()
+                .GetResult();
+
             if (!response.IsSuccessStatusCode)
                 return Array.Empty<string>();
 
-            var featureCollection = response.Content.ReadFromJsonAsync<FeatureDataContainer>().GetAwaiter().GetResult();
+            var featureCollection = response.Content
+                .ReadFromJsonAsync<FeatureDataContainer>()
+                .GetAwaiter()
+                .GetResult();
 
             if (featureCollection?.Features == null)
                 return Array.Empty<string>();
 
             var summaries = new List<string>();
+
             foreach (var feature in featureCollection.Features)
             {
-                string place = feature.Properties?.Place ?? "Unknown Location";
-                double mag = feature.Properties?.Mag ?? 0.0;
-                summaries.Add($"{place} - Mag {mag}");
+                string place =
+                    feature.Properties?.Place ?? "Unknown Location";
+
+                double magnitude =
+                    feature.Properties?.Mag ?? 0.0;
+
+                summaries.Add($"{place} - Mag {magnitude}");
             }
 
             return summaries.ToArray();
