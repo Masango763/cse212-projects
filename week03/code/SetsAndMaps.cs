@@ -19,7 +19,7 @@ public static class SetsAndMaps
         foreach (var w in words)
         {
             if (string.IsNullOrEmpty(w) || w.Length != 2) continue;
-            if (w[0] == w[1]) continue; // Skip identical letters like "aa"
+            if (w[0] == w[1]) continue;
 
             char[] charArray = w.ToCharArray();
             Array.Reverse(charArray);
@@ -40,7 +40,7 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 2: Read census.txt and summarize degrees found in column 4.
+    /// Problem 2: Read census.txt and summarize degrees found in column 1.
     /// </summary>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
@@ -53,12 +53,11 @@ public static class SetsAndMaps
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 var fields = line.Split(',');
                 
-                // Column 4 is standard for the education/degree field in CSE 212 census.txt
-                if (fields.Length > 4)
+                if (fields.Length > 1)
                 {
-                    string degree = fields[4].Trim().Trim('"');
+                    string degree = fields[1].Trim().Trim('"');
                     
-                    if (!string.IsNullOrEmpty(degree) && !degree.Equals("education", StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(degree))
                     {
                         if (!degrees.ContainsKey(degree))
                         {
@@ -74,7 +73,7 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 3: Determine if two words are anagrams (ignoring spaces and case).
+    /// Problem 3: Determine if two words are anagrams.
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
@@ -138,7 +137,6 @@ public static class SetsAndMaps
     }
 }
 
-// JSON Deserialization classes
 public class FeatureDataContainer
 {
     [JsonPropertyName("features")]
