@@ -24,3 +24,4 @@ To run any C# module or test suite locally using the .NET CLI:
 ```bash
 cd week03/learn
 dotnet run
+- week03/code/SetsAndMaps.cs: Hash set and dictionary implementations for finding pairs, summarizing census degree frequencies, anagram verification, and real-time earthquake data parsing.
