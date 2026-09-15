@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 public static class SetsAndMaps
 {
     /// <summary>
-    /// Problem 1: Find symmetric pairs of two letter words in O(n) time using a set.
+    /// Problem 1: Find symmetric pairs of two letter words in strict O(n) time using a set.
     /// </summary>
     public static string[] FindPairs(string[] words)
     {
@@ -18,16 +18,18 @@ public static class SetsAndMaps
 
         foreach (var w in words)
         {
-            if (string.IsNullOrEmpty(w) || w.Length != 2) continue;
-            if (w[0] == w[1]) continue;
+            if (w == null || w.Length != 2) continue;
+            char c1 = w[0];
+            char c2 = w[1];
+            if (c1 == c2) continue;
 
-            char[] charArray = w.ToCharArray();
-            Array.Reverse(charArray);
-            string rev = new string(charArray);
+            // Construct reverse string quickly
+            string rev = new string(new char[] { c2, c1 });
 
             if (seen.Contains(rev))
             {
-                string pair = string.Compare(w, rev) < 0 ? $"{w} & {rev}" : $"{rev} & {w}";
+                // Order them consistently to prevent duplicate pairs
+                string pair = c1 < c2 ? $"{c1}{c2} & {c2}{c1}" : $"{c2}{c1} & {c1}{c2}";
                 if (addedPairs.Add(pair))
                 {
                     result.Add(pair);
@@ -40,7 +42,7 @@ public static class SetsAndMaps
     }
 
     /// <summary>
-    /// Problem 2: Read census.txt and summarize degrees found in column 1.
+    /// Problem 2: Read census.txt and summarize degrees found in column 4.
     /// </summary>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
@@ -53,11 +55,11 @@ public static class SetsAndMaps
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 var fields = line.Split(',');
                 
-                if (fields.Length > 1)
+                if (fields.Length > 4)
                 {
-                    string degree = fields[1].Trim().Trim('"');
+                    string degree = fields[4].Trim().Trim('"');
                     
-                    if (!string.IsNullOrEmpty(degree))
+                    if (!string.IsNullOrEmpty(degree) && !degree.Equals("education", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!degrees.ContainsKey(degree))
                         {
