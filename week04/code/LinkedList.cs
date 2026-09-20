@@ -19,15 +19,17 @@ public class LinkedList : IEnumerable<int>
         }
     }
 
-    // Helper properties expected by test files
     public Node? Head => _head;
     public Node? Tail => _tail;
 
-    public void HeadAndTailAreNull()
+    public bool HeadAndTailAreNull()
     {
-        // Used in tests to assert head and tail are null
-        _head = null;
-        _tail = null;
+        return _head == null && _tail == null;
+    }
+
+    public bool HeadAndTailAreNotNull()
+    {
+        return _head != null && _tail != null;
     }
 
     public void InsertHead(int value)
@@ -115,7 +117,8 @@ public class LinkedList : IEnumerable<int>
                     Node newNode = new Node(newValue);
                     newNode.Prev = current;
                     newNode.Next = current.Next;
-                    current.Next.Prev = newNode;
+                    if (current.Next != null)
+                        current.Next.Prev = newNode;
                     current.Next = newNode;
                 }
                 return;
