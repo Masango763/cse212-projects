@@ -203,6 +203,6 @@ public static class LinkedListExtensions
 {
     public static string AsString(this IEnumerable<int> list)
     {
-        return "<List>{" + string.Join(", ", list) + "}";
+        return "<IEnumerable>{" + string.Join(", ", list) + "}";
     }
 }
