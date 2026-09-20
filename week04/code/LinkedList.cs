@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LinkedList : IEnumerable<int>
 {
@@ -16,6 +17,17 @@ public class LinkedList : IEnumerable<int>
         {
             Data = data;
         }
+    }
+
+    // Helper properties expected by test files
+    public Node? Head => _head;
+    public Node? Tail => _tail;
+
+    public void HeadAndTailAreNull()
+    {
+        // Used in tests to assert head and tail are null
+        _head = null;
+        _tail = null;
     }
 
     public void InsertHead(int value)
@@ -46,7 +58,8 @@ public class LinkedList : IEnumerable<int>
         }
         else
         {
-            _head.Next.Prev = null;
+            if (_head.Next != null)
+                _head.Next.Prev = null;
             _head = _head.Next;
         }
     }
@@ -62,7 +75,8 @@ public class LinkedList : IEnumerable<int>
         else
         {
             newNode.Prev = _tail;
-            _tail.Next = newNode;
+            if (_tail != null)
+                _tail.Next = newNode;
             _tail = newNode;
         }
     }
@@ -80,7 +94,33 @@ public class LinkedList : IEnumerable<int>
         else
         {
             _tail = _tail.Prev;
-            _tail.Next = null;
+            if (_tail != null)
+                _tail.Next = null;
+        }
+    }
+
+    public void InsertAfter(int oldValue, int newValue)
+    {
+        var current = _head;
+        while (current != null)
+        {
+            if (current.Data == oldValue)
+            {
+                if (current == _tail)
+                {
+                    InsertTail(newValue);
+                }
+                else
+                {
+                    Node newNode = new Node(newValue);
+                    newNode.Prev = current;
+                    newNode.Next = current.Next;
+                    current.Next.Prev = newNode;
+                    current.Next = newNode;
+                }
+                return;
+            }
+            current = current.Next;
         }
     }
 
@@ -101,8 +141,10 @@ public class LinkedList : IEnumerable<int>
                 }
                 else
                 {
-                    current.Prev.Next = current.Next;
-                    current.Next.Prev = current.Prev;
+                    if (current.Prev != null)
+                        current.Prev.Next = current.Next;
+                    if (current.Next != null)
+                        current.Next.Prev = current.Prev;
                 }
                 return;
             }
@@ -151,5 +193,13 @@ public class LinkedList : IEnumerable<int>
     public override string ToString()
     {
         return "<LinkedList>{" + string.Join(", ", this) + "}";
+    }
+}
+
+public static class LinkedListExtensions
+{
+    public static string AsString(this IEnumerable<int> list)
+    {
+        return "<List>{" + string.Join(", ", list) + "}";
     }
 }
