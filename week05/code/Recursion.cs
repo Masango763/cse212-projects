@@ -60,56 +60,7 @@ public static class Recursion
     // 2. Permutations Choose
     // ============================================================
 
-    // This is the signature used by the tests:
-    // PermutationsChoose(List<string>, string, int, List<string>)
-    public static void PermutationsChoose(
-        List<string> letters,
-        string word,
-        int size,
-        List<string> results)
-    {
-        // Stop when the requested word length is reached.
-        if (word.Length == size)
-        {
-            results.Add(word);
-            return;
-        }
 
-        // If there are no more letters, stop.
-        if (letters.Count == 0)
-            return;
-
-        for (int i = 0; i < letters.Count; i++)
-        {
-            // Make a copy so each recursive branch has its own
-            // remaining letters.
-            List<string> remaining = new List<string>(letters);
-
-            string chosen = remaining[i];
-
-            remaining.RemoveAt(i);
-
-            PermutationsChoose(
-                remaining,
-                word + chosen,
-                size,
-                results);
-        }
-    }
-
-    // Convenience overload in case another test calls:
-    // PermutationsChoose(letters, size, results)
-    public static void PermutationsChoose(
-        List<string> letters,
-        int size,
-        List<string> results)
-    {
-        PermutationsChoose(
-            letters,
-            "",
-            size,
-            results);
-    }
 
 
     // ============================================================
@@ -199,156 +150,18 @@ public static class Recursion
     // 5. Solve Maze
     // ============================================================
 
-    // Main recursive maze method.
-    public static void SolveMaze(
-        int[] maze,
-        int size,
-        int x,
-        int y,
-        List<(int, int)> currPath,
-        List<string> results)
-    {
-        // Make sure this position is valid.
-        if (!IsValidMove(
-                maze,
-                size,
-                x,
-                y,
-                currPath))
-        {
-            return;
-        }
-
-        // Add current position to the path.
-        currPath.Add((x, y));
-
-        // If we reached the bottom-right corner,
-        // save the complete path.
-        if (IsEnd(maze, size, x, y))
-        {
-            results.Add(currPath.AsString());
-        }
-        else
-        {
-            // Move right.
-            SolveMaze(
-                maze,
-                size,
-                x + 1,
-                y,
-                currPath,
-                results);
-
-            // Move left.
-            SolveMaze(
-                maze,
-                size,
-                x - 1,
-                y,
-                currPath,
-                results);
-
-            // Move down.
-            SolveMaze(
-                maze,
-                size,
-                x,
-                y + 1,
-                currPath,
-                results);
-
-            // Move up.
-            SolveMaze(
-                maze,
-                size,
-                x,
-                y - 1,
-                currPath,
-                results);
-        }
-
-        // Backtrack.
-        currPath.RemoveAt(currPath.Count - 1);
-    }
 
 
-    // Two-argument version.
-    //
-    // The tests expect SolveMaze(maze, size), so this version
-    // creates the results list and returns it.
-    public static List<string> SolveMaze(
-        int[] maze,
-        int size)
-    {
-        List<string> results = new List<string>();
-
-        SolveMaze(
-            maze,
-            size,
-            0,
-            0,
-            new List<(int, int)>(),
-            results);
-
-        return results;
-    }
 
 
-    // Three-argument version, retained for compatibility.
-    public static void SolveMaze(
-        int[] maze,
-        int size,
-        List<string> results)
-    {
-        SolveMaze(
-            maze,
-            size,
-            0,
-            0,
-            new List<(int, int)>(),
-            results);
-    }
 
 
     // ============================================================
     // Maze Helpers
     // ============================================================
 
-    private static bool IsValidMove(
-        int[] maze,
-        int size,
-        int x,
-        int y,
-        List<(int, int)> currPath)
-    {
-        // Outside maze.
-        if (x < 0 || x >= size ||
-            y < 0 || y >= size)
-        {
-            return false;
-        }
-
-        // Cell is blocked.
-        if (maze[y * size + x] == 0)
-            return false;
-
-        // Already visited this cell.
-        if (currPath.Contains((x, y)))
-            return false;
-
-        return true;
-    }
 
 
-    private static bool IsEnd(
-        int[] maze,
-        int size,
-        int x,
-        int y)
-    {
-        return x == size - 1 &&
-               y == size - 1;
-    }
 }
 
 
