@@ -1,0 +1,18 @@
+namespace week02.code;
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Turns { get; set; }
+
+    public Person(string name, int turns)
+    {
+        Name = name;
+        Turns = turns;
+    }
+
+    public override string ToString()
+    {
+        return $"{Name} ({Turns})";
+    }
+}
